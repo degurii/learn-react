@@ -1,13 +1,25 @@
+import { createAction, handleActions } from 'redux-actions';
+
 const CHANGE_INPUT = 'todos/CHANGE_INPUT';
 const INSERT = 'todos/INSERT';
 const TOGGLE = 'todos/TOGGLE';
 const REMOVE = 'todos/REMOVE';
 
+export const changeInput = createAction(CHANGE_INPUT, input => input);
+/*
 export const changeInput = input => ({
   type: CHANGE_INPUT,
+  input,
 });
+*/
 
 let id = 3;
+export const insert = createAction(INSERT, text => ({
+  id: id++,
+  text,
+  done: false,
+}));
+/*
 export const insert = text => ({
   type: INSERT,
   todo: {
@@ -16,7 +28,11 @@ export const insert = text => ({
     done: false,
   },
 });
+*/
 
+export const toggle = createAction(TOGGLE, id => id);
+export const remove = createAction(REMOVE, id => id);
+/*
 export const toggle = id => ({
   type: TOGGLE,
   id,
@@ -26,6 +42,7 @@ export const remove = id => ({
   type: REMOVE,
   id,
 });
+*/
 const initialState = {
   input: '',
   todos: [
@@ -42,8 +59,29 @@ const initialState = {
   ],
 };
 
+const todos = handleActions(
+  {
+    [CHANGE_INPUT]: (state, { payload: input }) => ({ ...state, input: input }),
+    [INSERT]: (state, { payload: todo }) => ({
+      ...state,
+      todos: state.todos.concat(todo),
+    }),
+    [TOGGLE]: (state, { payload: id }) => ({
+      ...state,
+      todos: state.todos.map(todo =>
+        todo.id === id ? { ...todo, done: !todo.done } : todo,
+      ),
+    }),
+    [REMOVE]: (state, { payload: id }) => ({
+      ...state,
+      todos: state.todos.filter(todo => todo.id !== id),
+    }),
+  },
+  initialState,
+);
+/*
 const todos = (state = initialState, action) => {
-  switch (action) {
+  switch (action.type) {
     case CHANGE_INPUT:
       return {
         ...state,
@@ -52,7 +90,7 @@ const todos = (state = initialState, action) => {
     case INSERT:
       return {
         ...state,
-        todos: [...todos, action.todo],
+        todos: [...state.todos, action.todo],
       };
 
     case TOGGLE:
@@ -71,5 +109,6 @@ const todos = (state = initialState, action) => {
       return state;
   }
 };
+*/
 
 export default todos;

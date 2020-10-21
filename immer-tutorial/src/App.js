@@ -1,4 +1,5 @@
 import React, { useRef, useCallback, useState } from 'react';
+import produce from 'immer';
 
 const App = () => {
   const nextId = useRef(1);
@@ -12,14 +13,15 @@ const App = () => {
   const onChange = useCallback(
     (e) => {
       const { name, value } = e.target;
-      setForm({
-        ...form,
-        [name]: [value],
-      });
+      setForm(
+        produce((draft) => {
+          draft[name] = value;
+        })
+      );
     },
-    [form]
-  );
 
+    []
+  );
   // form 등록을 위한 함수
   const onSubmit = useCallback(
     (e) => {
@@ -29,29 +31,26 @@ const App = () => {
         name: form.name,
         username: form.username,
       };
-
-      setData({
-        ...data,
-        array: data.array.concat(info),
-      });
-      setForm({
-        name: '',
-        username: '',
-      });
+      // array에 새 항목 등록
+      setData(
+        produce((draft) => {
+          draft.array.push(info);
+        })
+      );
+      // form 초기화
+      setForm({ name: '', username: '' });
       nextId.current += 1;
     },
-    [data, form.name, form.username]
+    [form.name, form.username]
   );
 
-  const onRemove = useCallback(
-    (id) => {
-      setData({
-        ...data,
-        array: data.array.filter((info) => info.id !== id),
-      });
-    },
-    [data]
-  );
+  const onRemove = useCallback((id) => {
+    setData(
+      produce((draft) => {
+        draft.array = draft.array.filter((info) => info.id !== id);
+      })
+    );
+  }, []);
 
   return (
     <div>
