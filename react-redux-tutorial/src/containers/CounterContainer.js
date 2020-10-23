@@ -1,13 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import Counter from '../components/Counter';
+import { useSelector } from 'react-redux';
+import Counter from './Counter';
 import { increase, decrease } from '../modules/counter';
 
-const CounterContainer = ({ number, increase, decrease }) => {
-  return (
-    <Counter number={number} onIncrease={increase} onDecrease={decrease} />
-  );
+const CounterContainer = () => {
+  const { number } = useSelector(state => state.counter);
+  return <Counter number={number} />;
 };
+
+export default CounterContainer;
 
 /*
 *** 방법 1) ***
@@ -54,9 +55,9 @@ export default connect(
       dispatch,
     ),
 )(CounterContainer);
-*/
 
-// 방법 4) 그냥 액션 생성 함수를 객체로 넣어주면 connect함수가 알아서 bindActionCreators 작업을 대신해준다
+
+*** 방법 4) 그냥 액션 생성 함수를 객체로 넣어주면 connect함수가 알아서 bindActionCreators 작업을 대신해준다
 export default connect(
   state => ({
     number: state.counter.number,
@@ -66,3 +67,4 @@ export default connect(
     decrease,
   },
 )(CounterContainer);
+*/
