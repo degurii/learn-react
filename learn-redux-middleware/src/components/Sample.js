@@ -5,6 +5,7 @@ const Sample = ({ loadingPost, loadingUsers, post, users }) => {
     <div>
       <section>
         <h1>포스트</h1>
+        {console.log(loadingPost)}
         {loadingPost && '로딩 중...'}
         {!loadingPost && post && (
           <div>
@@ -19,7 +20,7 @@ const Sample = ({ loadingPost, loadingUsers, post, users }) => {
         {loadingUsers && '로딩 중...'}
         {!loadingUsers && users && (
           <ul>
-            {users.map((user) => (
+            {users.map(user => (
               <li key={user.id}>
                 {user.username} ({user.email})
               </li>
